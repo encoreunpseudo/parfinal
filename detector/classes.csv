@@ -1,0 +1,84 @@
+ ;class_name;yolo_class
+person;person;P
+vélo;bicycle;OAG
+voiture;car;OAG
+moto;motorcycle;OAG
+avion;airplane;OAG
+bus;bus;OAG
+train;train;OAG
+camion;truck;OAG
+bateau;boat;OAG
+feu de circulation;traffic light;OAP
+hydrant;fire hydrant;OAP
+panneau stop;stop sign;OAP
+parcmètre;parking meter;OAP
+banc;bench;OAP
+oiseau;bird;A
+chat;cat;A
+chien;dog;A
+cheval;horse;A
+mouton;sheep;A
+vache;cow;A
+éléphant;elephant;A
+ours;bear;A
+zèbre;zebra;A
+girafe;giraffe;A
+sac à dos;backpack;OAP
+parapluie;umbrella;OAP
+sac à main;handbag;OAP
+cravate;tie;OAP
+valise;suitcase;OAP
+frisbee;frisbee;OAP
+skis;skis;OAP
+snowboard;snowboard;OAP
+ballon de sport;sports ball;OAP
+cerf-volant;kite;OAP
+batte de baseball;baseball bat;OAP
+gant de baseball;baseball glove;OAP
+skateboard;skateboard;OAP
+planche de surf;surfboard;OAP
+raquette de tennis;tennis racket;OAP
+bouteille;bottle;OAP
+verre à vin;wine glass;OAP
+tasse;cup;OAP
+fourchette;fork;OAP
+couteau;knife;OAP
+cuillère;spoon;OAP
+bol;bowl;OAP
+banane;banana;ONP
+pomme;apple;ONP
+sandwich;sandwich;OAP
+orange;orange;ONP
+brocoli;broccoli;ONP
+carotte;carrot;ONP
+hot-dog;hot dog;OAP
+pizza;pizza;OAP
+beignet;donut;OAP
+gâteau;cake;OAP
+chaise;chair;OAG
+canapé;couch;OAG
+plante en pot;potted plant;ONP
+lit;bed;OAG
+table à manger;dining table;OAG
+toilette;toilet;OAG
+télévision;tv;OAG
+ordinateur portable;laptop;OAP
+souris;mouse;OAP
+télécommande;remote;OAP
+clavier;keyboard;OAP
+téléphone portable;cell phone;OAP
+micro-ondes;microwave;OAG
+four;oven;OAG
+grille-pain;toaster;OAP
+évier;sink;OAG
+réfrigérateur;refrigerator;OAG
+livre;book;OAP
+horloge;clock;OAP
+vase;vase;OAP
+ciseaux;scissors;OAP
+nounours;teddy bear;OAP
+sèche-cheveux;hair drier;OAP
+brosse à dents;toothbrush;OAP
+OP;OP;OP
+ONG;ONG;ONG
+OAG;OAG;OAG
