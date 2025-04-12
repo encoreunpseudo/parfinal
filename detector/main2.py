@@ -352,10 +352,8 @@ class BatchDetectionManager:
         use_legacy_mode = False
         
         try:
-            # Use tqdm for progress tracking
             with tqdm(total=total_frames, desc="Processing video") as pbar:
                 if use_legacy_mode:
-                    # Use original batch processing without blur detection
                     for frame_indices, batch_frames in self.video.get_batch_frames(self.batch_size, preprocess=True):
                         self.process_batch_faces(batch_frames, frame_indices)
                         self.process_batch_hands(batch_frames, frame_indices)
@@ -364,46 +362,30 @@ class BatchDetectionManager:
                         frames_processed += len(batch_frames)
                         pbar.update(len(batch_frames))
                 else:
-                    # Use blur detection and selective processing
                     for frame_indices, batch_frames, blur_mask in get_batch_frames_with_blur_detection(
                         self.video, self.batch_size, self.blur_threshold, preprocess=True
                     ):
-                        # Count blurry frames
                         blurry_count = np.sum(blur_mask)
                         total_blurry += blurry_count
                         
-                        # Process all frames for now (to ensure stability)
-                        # Later we can optimize to only process non-blurry frames
-                        self.process_batch_faces(batch_frames, frame_indices)
-                        self.process_batch_hands(batch_frames, frame_indices)
-                        self.process_batch_yolo(batch_frames, frame_indices)
+                        non_blurry_indices = [idx for idx, blurry in zip(frame_indices, blur_mask) if not blurry]
+                        non_blurry_frames = [frame for frame, blurry in zip(batch_frames, blur_mask) if not blurry]
                         
-                        # When stable, uncomment this code to only process non-blurry frames
-                        # non_blurry_indices = [idx for idx, blurry in zip(frame_indices, blur_mask) if not blurry]
-                        # non_blurry_frames = [frame for frame, blurry in zip(batch_frames, blur_mask) if not blurry]
-                        # 
-                        # if non_blurry_frames:
-                        #     self.process_batch_faces(non_blurry_frames, non_blurry_indices)
-                        #     self.process_batch_hands(non_blurry_frames, non_blurry_indices)
-                        #     self.process_batch_yolo(non_blurry_frames, non_blurry_indices)
+                        if non_blurry_frames:
+                            self.process_batch_faces(non_blurry_frames, non_blurry_indices)
+                            self.process_batch_hands(non_blurry_frames, non_blurry_indices)
+                            self.process_batch_yolo(non_blurry_frames, non_blurry_indices)
                         
-                        # Skip interpolation for now until we fix all bugs
-                        # Later when we want to use it:
-                        # 
-                        # # For each detection class, interpolate data for blurry frames
-                        # for name, detection in self.detections.items():
-                        #     # Extract frames for this batch
-                        #     batch_detections = [detection.frames[idx] for idx in frame_indices]
-                        #     
-                        #     # Interpolate data for blurry frames
-                        #     interpolated_detections = interpolate_detections(
-                        #         frame_indices, batch_detections, blur_mask
-                        #     )
-                        #     
-                        #     # Update the detection frames with interpolated data
-                        #     for i, idx in enumerate(frame_indices):
-                        #         if blur_mask[i]:
-                        #             detection.frames[idx] = interpolated_detections[i]
+                        for name, detection in self.detections.items():
+                            batch_detections = [detection.frames[idx] for idx in frame_indices]
+                            
+                            interpolated_detections = interpolate_detections(
+                                frame_indices, batch_detections, blur_mask
+                            )
+                            
+                            for i, idx in enumerate(frame_indices):
+                                if blur_mask[i]:
+                                    detection.frames[idx] = interpolated_detections[i]
                         
                         frames_processed += len(batch_frames)
                         pbar.update(len(batch_frames))
@@ -412,15 +394,13 @@ class BatchDetectionManager:
                             'processed': frames_processed
                         })
                 
-                # Update progress
-                frames_processed += len(batch_frames)
-                pbar.update(len(batch_frames))
                 pbar.set_postfix({
-                    'blurry': f"{total_blurry/frames_processed:.1%}",
+                    'blurry': f"{total_blurry/frames_processed:.1%}" if frames_processed > 0 else "0%",
                     'processed': frames_processed
                 })
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"Erreur pendant le traitement vidéo: {e}")
+            raise
         
         # Log statistics about blur detection
         logger.info(f"Total frames processed: {frames_processed}")
