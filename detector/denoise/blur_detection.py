@@ -29,20 +29,7 @@ def interpolate_detections(frame_indices, detections, blur_mask, method='linear'
     if len(clear_indices) < 2:
         return detections
     
-    # Create a copy of the detections to modify
-    interpolated_detections = detections.copy()
     
-    # For each blurry frame, interpolate the detection data
-    blurry_indices = frame_indices[blur_mask]
-    
-    # We can't directly interpolate the confidence lists since they're of different lengths
-    # Instead, we'll focus on interpolating object positions for tracked objects
-        
-        # Interpolate bounding boxes for each tracked object
-        # This is more complex as objects may appear/disappear
-        # Here we'll focus on objects that are present in consecutive frames
-        
-        # Get all unique object IDs
     all_ids = set()
     for i in clear_indices:
         for obj_id, _, _ in detections[i].objects_id:
