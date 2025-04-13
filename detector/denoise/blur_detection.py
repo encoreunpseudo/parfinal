@@ -3,30 +3,11 @@ import numpy as np
 from scipy.interpolate import interp1d
 from .denoise_frame import denoise
 def variance_of_laplacian(image):
-    """
-    Compute the Laplacian of the image and return the variance.
-    A measure of image focus/blur. Lower values indicate more blur.
     
-    Args:
-        image: Input grayscale image
-        
-    Returns:
-        Variance of the Laplacian response (blur measure)
-    """
     return cv2.Laplacian(image, cv2.CV_64F).var()
 
 def detect_blur(frame, threshold=100.0):
-    """
-    Detect if a frame is blurry using the Variance of Laplacian method.
-    
-    Args:
-        frame: Input BGR frame
-        threshold: Blur threshold (lower means more strict)
-        
-    Returns:
-        blur_score: Numerical blur score (higher means sharper)
-        is_blurry: Boolean indicating if the frame is considered blurry
-    """
+   
     # Convert to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
@@ -37,18 +18,7 @@ def detect_blur(frame, threshold=100.0):
     return blur_score, blur_score < threshold
 
 def interpolate_detections(frame_indices, detections, blur_mask, method='linear'):
-    """
-    Interpolate detection data for blurry frames.
-    
-    Args:
-        frame_indices: List of frame indices
-        detections: List of detection data for each frame
-        blur_mask: Boolean mask where True indicates a blurry frame
-        method: Interpolation method ('linear', 'cubic', etc.)
-        
-    Returns:
-        Interpolated detection data
-    """
+   
     # Convert to numpy arrays for easier manipulation
     frame_indices = np.array(frame_indices)
     
@@ -128,20 +98,7 @@ def interpolate_detections(frame_indices, detections, blur_mask, method='linear'
     return interpolated_detections
 
 def get_batch_frames_with_blur_detection(video_processor, batch_size=8, blur_threshold=100.0, preprocess=False):
-    """
-    Generator that returns batches of frames with blur detection.
-    
-    Args:
-        video_processor: VideoProcessor instance
-        batch_size: Number of frames per batch
-        blur_threshold: Threshold for blur detection
-        preprocess: Whether to preprocess frames
-        
-    Yields:
-        frame_indices: List of frame indices
-        batch_frames: List of frames
-        blur_mask: Boolean mask indicating blurry frames
-    """
+   
     cap = cv2.VideoCapture(str(video_processor.path))
     batch_frames = []
     frame_indices = []
@@ -179,11 +136,8 @@ def get_batch_frames_with_blur_detection(video_processor, batch_size=8, blur_thr
                 
     cap.release()
 
-# Integration into the main VideoProcessor class
 def process_video_with_blur_detection(self, blur_threshold=100.0):
-    """
-    Process the video with blur detection and interpolation.
-    """
+
     total_frames = self.video.frame_count
     frames_processed = 0
     total_blurry = 0
@@ -208,7 +162,6 @@ def process_video_with_blur_detection(self, blur_threshold=100.0):
                 self.process_batch_hands(non_blurry_frames, non_blurry_indices)
                 self.process_batch_yolo(non_blurry_frames, non_blurry_indices)
             
-            # For each detection class, interpolate data for blurry frames
             for name, detection in self.detections.items():
                 # Extract frames for this batch
                 batch_detections = [detection.frames[idx] for idx in frame_indices]
@@ -236,21 +189,10 @@ def process_video_with_blur_detection(self, blur_threshold=100.0):
     logger.info(f"Blurry frames detected: {total_blurry} ({total_blurry/frames_processed:.1%})")
     logger.info(f"Processing time saved: {total_blurry/frames_processed:.1%}")
     
-    # Compute final statistics
     self.compute_final_statistics()
 
-# Add a method to dynamically calculate the optimal blur threshold
 def calculate_optimal_blur_threshold(video_processor, sample_frames=100):
-    """
-    Calculate an optimal blur threshold based on a sample of frames.
     
-    Args:
-        video_processor: VideoProcessor instance
-        sample_frames: Number of frames to sample
-        
-    Returns:
-        Optimal blur threshold
-    """
     cap = cv2.VideoCapture(str(video_processor.path))
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
@@ -267,12 +209,10 @@ def calculate_optimal_blur_threshold(video_processor, sample_frames=100):
     
     cap.release()
     
-    # If we couldn't read any frames, return a default value
     if not blur_scores:
         return 100.0
     
-    # Calculate threshold using statistics (e.g., percentile-based)
-    # Using the 30th percentile as threshold means ~30% of frames will be considered blurry
+   
     optimal_threshold = np.percentile(blur_scores, 30)
     
     return optimal_threshold
