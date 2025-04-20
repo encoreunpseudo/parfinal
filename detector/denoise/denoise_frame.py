@@ -3,8 +3,7 @@ import numpy as np
 
 def denoise(frame):
     """
-    Applique un débruitage adaptatif sur une frame vidéo, optimisé pour les caméras web
-    de faible qualité (années 2010).
+    Applique un débruitage adaptatif sur une frame vidéo
     
     Paramètres:
     frame (numpy.ndarray): Image d'entrée au format BGR
