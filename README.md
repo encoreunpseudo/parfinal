@@ -1,4 +1,4 @@
-# Système de Détection et d'Analyse Vidéo pour l'Étude du Développement Cognitif
+# Système de Détection et d'Analyse Vidéo pour l'Étude du Développement Cognitif - Master 1 Project 
 
 Ce projet propose un pipeline complet pour la détection, la classification, l'analyse et la visualisation d'objets présents dans des vidéos d'enfants en interaction. Il repose sur une architecture modulaire basée sur le deep learning (YOLOv8 fine-tuné) et inclut des métriques spatiales et temporelles utiles à l'étude du développement cognitif.
 
