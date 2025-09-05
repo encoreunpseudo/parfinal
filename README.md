@@ -1,95 +1,94 @@
-# Système de Détection et d'Analyse Vidéo pour l'Étude du Développement Cognitif - Master 1 Project 
+# Video Detection and Analysis System for Cognitive Development Study - Master 1 Project
 
-Ce projet propose un pipeline complet pour la détection, la classification, l'analyse et la visualisation d'objets présents dans des vidéos d'enfants en interaction. Il repose sur une architecture modulaire basée sur le deep learning (YOLOv8 fine-tuné) et inclut des métriques spatiales et temporelles utiles à l'étude du développement cognitif.
+This project offers a complete pipeline for the detection, classification, analysis, and visualization of objects present in videos of children interacting. It is based on a modular architecture using deep learning (fine-tuned YOLOv8) and includes spatial and temporal metrics useful for studying cognitive development.
 
-## Fonctionnalités principales
+## Main Features
+* **Automatic detection** of 6 classes of objects in videos
+* **Spatial and temporal analysis** of interactions
+* **Interactive visualization** of results via Streamlit
+* **Data export** in CSV format
 
-- **Détection automatique** de 6 classes d'objets dans les vidéos
-- **Analyse spatiale et temporelle** des interactions
-- **Visualisation interactive** des résultats via Streamlit
-- **Exportation des données** sous forme de tableaux CSV
-
-## Structure du Projet
+## Project Structure
 
 ```
 ├── detector/
-│   ├── classes.csv     # Définitions des classes et assignation YOLO
-│   ├── denoise          # Débruitage vidéo
-│   ├── main2.py             # Pipeline principal de traitement
-│   ├── run.py               # Script de lancement
-│   ├── yolov8_model_new.pt  # Modèle YOLOv8 fine-tuné pour la détection des OP
-├── exemples/            # Résultats visuels des vidéos traitées
-│   ├── output.mp4     # Exemple de vidéo
+│   ├── classes.csv     # Class definitions and YOLO assignment
+│   ├── denoise         # Video denoising
+│   ├── main2.py        # Main processing pipeline
+│   ├── run.py          # Launch script
+│   ├── yolov8_model_new.pt  # Fine-tuned YOLOv8 model for SO detection
+├── exemples/           # Visual results of processed videos
+│   ├── output.mp4      # Example video
 ├── indicateurs/
-│   ├── distance.py          # Calcul de la distance entre mains et objets petits (OP)
-│   ├── pos_moyenne.py       # Moyennes spatiales des classes détectées
-│   └── tps_presence.py      # Temps moyen de présence par classe
+│   ├── distance.py     # Calculation of distance between hands and small objects (SO)
+│   ├── pos_moyenne.py  # Spatial averages of detected classes
+│   └── tps_presence.py # Average time of presence per class
 ```
 
-## Protocole de Traitement Vidéo
+## Video Processing Protocol
+The video analysis follows a protocol in **four successive stages**:
 
-L'analyse vidéo suit un protocole en **quatre étapes successives** :
+1. Preprocessing
+   * Denoising of the visual signal to improve detection quality
+   * Preparation of frames for analysis
 
-### 1. Prétraitement
-- Débruitage du signal visuel pour améliorer la qualité de détection
-- Préparation des frames pour l'analyse
+2. Object Detection
+   * Using a **fine-tuned YOLOv8 model** on our specific data
+   * Detection of **6 operational classes**:
+      * `visages`: faces of participants
+      * `mains`: hands of participants
+      * `A`: animals
+      * `OAG`: large artificial objects
+      * `ONG`: large natural objects
+      * `OP`: small objects (merging natural/artificial)
 
-### 2. Détection d'Objets
-- Utilisation d'un modèle **YOLOv8 fine-tuné** sur nos données spécifiques
-- Détection des **6 classes opérationnelles** :
-  - `visages` : visages des participants
-  - `mains` : mains des participants
-  - `A` : animaux
-  - `OAG` : objets artificiels grands
-  - `ONG` : objets naturels grands
-  - `OP` : objets petits (fusion naturels / artificiels)
+3. Data Structuring
+   * Results organized as **CSV tables** including:
+      * Detected classes
+      * Spatial coordinates
+      * Timestamps
+      * Confidence scores
 
-### 3. Structuration des Données
-- Résultats organisés sous forme de **tableaux CSV** incluant:
-  - Classes détectées
-  - Coordonnées spatiales
-  - Timestamps
-  - Scores de confiance
+4. Visualization and Analysis
+   * Interactive interfaces to explore data
+   * Advanced metrics on behaviors and interactions
 
-### 4. Visualisation et Analyse
-- Interfaces interactives pour explorer les données
-- Métriques avancées sur les comportements et interactions
+## Provided Indicators
 
-## Indicateurs fournis
-
-| Script | Fonction | Application |
+| Script | Function | Application |
 |--------|----------|-------------|
-| `distance.py` | Mesure la distance entre les mains et les objets petits | Analyse des interactions enfant-objet |
-| `pos_moyenne.py` | Calcule la position moyenne des classes dans l'espace | Cartographie de l'espace d'interaction |
-| `tps_presence.py` | Estime le temps moyen de présence de chaque classe | Analyse de l'attention et de l'engagement |
+| `distance.py` | Measures the distance between hands and small objects | Analysis of child-object interactions |
+| `pos_moyenne.py` | Calculates the average position of classes in space | Mapping of the interaction space |
+| `tps_presence.py` | Estimates the average time of presence for each class | Analysis of attention and engagement |
 
-## Guide d'utilisation
+## User Guide
 
-### 1. Lancer le traitement principal
-```bash
+1. Launch the main processing
+
+```
 python detector/run.py
 ```
 
-### 2. Exécuter les analyses via Streamlit
-```bash
-# Calcul des distances
+2. Run analyses via Streamlit
+
+```
+# Distance calculation
 streamlit run indicateurs/distance.py
 
-# Position moyenne
+# Average position
 streamlit run indicateurs/pos_moyenne.py
 
-# Temps de présence
+# Presence time
 streamlit run indicateurs/tps_presence.py
 ```
 
-## Données d'entrée et de sortie
+## Input and Output Data
+* **Input**: Videos to be analyzed should be placed in the `exemples/` folder in `.mp4` format
+* **Output**:
+   * Annotated frames (available in `exemples/`)
+   * CSV files of metrics
+   * Interactive visualizations via Streamlit
 
-- **Entrée**: Les vidéos à analyser doivent être placées dans le dossier `exemples/` au format `.mp4`
-- **Sortie**: 
-  - Frames annotées (disponibles dans `exemples/`)
-  - Fichiers CSV des métriques
-  - Visualisations interactives via Streamlit
-
-## Contexte de recherche
-
-Ce pipeline a été développé dans le cadre d'un projet de recherche à l'École Centrale de Lyon sur le développement cognitif. Il vise à automatiser l'étude des interactions enfant-objet et à produire des indicateurs exploitables pour les chercheurs en sciences cognitives.
+## Research Context
+This pipeline was developed as part of a research project at École Centrale de Lyon on cognitive development. It aims to automate the study of child-object interactions and produce usable indicators for researchers in cognitive sciences.
+Amel Tebboune - Sarah Sebbane
